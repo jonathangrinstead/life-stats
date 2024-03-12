@@ -21,13 +21,16 @@ google_fit_refresh_token = ENV['GOOGLE_FIT_REFRESH_TOKEN']
 google_fit_token_url = 'https://oauth2.googleapis.com/token'
 
 # Google Api Request for new access token
-
+begin
 response = RestClient.post(google_fit_token_url, {
   client_id: google_fit_client_id,
   client_secret: google_fit_client_secret,
   refresh_token: google_fit_refresh_token,
   grant_type: 'refresh_token'
 })
+rescue RestClient::ExceptionWithResponse => e
+  puts e.response
+end
 
 access_token = JSON.parse(response.body)['access_token']
 
@@ -69,6 +72,7 @@ begin
   parsed_response = JSON.parse(api_response.body)
   step_count = parsed_response["bucket"][0]["dataset"][0]["point"][0]["value"][0]["intVal"]
 rescue RestClient::ExceptionWithResponse => e
+  puts e.response
 end
 
 # Twilio Api Credentials

@@ -34,7 +34,7 @@ end
 
 access_token = JSON.parse(response.body)['access_token']
 
-#Yesterdays Date in Miliseconds For Google fit steps request
+# Yesterdays Date in Miliseconds For Google fit steps request
 
 now = Time.now
 
@@ -75,6 +75,10 @@ rescue RestClient::ExceptionWithResponse => e
   puts e.response
 end
 
+# Banking Stats
+
+monzo_spent_yesterday = ENV['MONZO_SPEND_TODAY']
+
 # Twilio Api Credentials
 
 account_sid = ENV['TWILIO_ACCOUNT_SID']
@@ -84,7 +88,7 @@ auth_token = ENV['TWILIO_AUTH_TOKEN']
 # Twilio Message Creation
 
 message = @client.messages.create(
-  body: "Yesterday's Stats 🚀 : 🏃‍♂️ #{step_count} Steps",
+  body: "Yesterday's Stats 🚀 : 🏃‍♂️ #{step_count} Steps, 💰 £#{monzo_spent_yesterday} Spent",
   from: ENV['TWILIO_PHONE_NUMBER'],
   to: ENV['MY_PHONE_NUMBER']
   )

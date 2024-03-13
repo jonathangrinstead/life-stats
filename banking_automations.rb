@@ -51,7 +51,6 @@ begin
 
   if response_json.key?('access_token')
     access_token = response_json['access_token']
-    puts "New access token: #{access_token}"
 
     # Update the refresh token if a new one is provided
     if response_json.key?('refresh_token')
@@ -60,11 +59,36 @@ begin
       # Update your stored refresh token in the .env file
       update_env_file('MONZO_REFRESH_TOKEN', new_refresh_token)
 
-      puts "New refresh token received and stored."
+      puts 'New refresh token received and stored.'
     end
   else
-    puts "Unexpected response format."
+    puts 'Unexpected response format.'
   end
+rescue RestClient::ExceptionWithResponse => e
+  puts "An error occurred: #{e.response}"
+end
+
+accounts_url = 'https://api.monzo.com/accounts'
+
+# Making the GET request for the account_id
+begin
+  response = RestClient.get accounts_url, {Authorization: "Bearer #{access_token}"}
+  accounts_json = JSON.parse(response.body)
+  account_id = accounts_json['accounts'][0]['id']
+rescue RestClient::ExceptionWithResponse => e
+  puts "An error occurred: #{e.response}"
+end
+
+balance_url = "https://api.monzo.com/balance?account_id=#{account_id}"
+
+# Making the GET request for my account details
+begin
+  response = RestClient.get balance_url, {Authorization: "Bearer #{access_token}"}
+  balance_json = JSON.parse(response.body)
+  spend_today = balance_json['spend_today']
+
+  update_env_file('MONZO_SPEND_TODAY', spend_today)
+  puts 'Monzo spend today recieved and updated.'
 rescue RestClient::ExceptionWithResponse => e
   puts "An error occurred: #{e.response}"
 end

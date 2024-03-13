@@ -29,6 +29,13 @@ def update_env_file(key, new_value)
   end
 end
 
+# Method to convert 64bit integer into float
+def format_currency(amount_in_pounds)
+  amount_str = amount_in_pounds.to_s.rjust(3, '0')
+  formatted_amount = amount_str.insert(-3, '.')
+  formatted_amount.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
+end
+
 # Retrieve environment variables
 refresh_token = ENV['MONZO_REFRESH_TOKEN']
 client_id = ENV['MONZO_CLIENT_ID']
@@ -86,8 +93,8 @@ begin
   response = RestClient.get balance_url, {Authorization: "Bearer #{access_token}"}
   balance_json = JSON.parse(response.body)
   spend_today = balance_json['spend_today']
-
-  update_env_file('MONZO_SPEND_TODAY', spend_today)
+  formatted_spend = format_currency(spend_today.to_i.abs)
+  update_env_file('MONZO_SPEND_TODAY', formatted_spend)
   puts 'Monzo spend today recieved and updated.'
 rescue RestClient::ExceptionWithResponse => e
   puts "An error occurred: #{e.response}"

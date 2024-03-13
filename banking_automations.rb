@@ -12,12 +12,29 @@ end
 
 Dotenv.load
 
+# Method to update the .env file
+def update_env_file(key, new_value)
+  env_file_path = '.env'
+  if File.exist?(env_file_path)
+    new_contents = File.readlines(env_file_path).map do |line|
+      if line.strip.start_with?("#{key}=")
+        "#{key}=#{new_value}\n"
+      else
+        line
+      end
+    end.join
+    File.open(env_file_path, 'w') { |file| file.write(new_contents) }
+  else
+    File.open(env_file_path, 'w') { |file| file.write("#{key}=#{new_value}\n") }
+  end
+end
+
 # Retrieve environment variables
 refresh_token = ENV['MONZO_REFRESH_TOKEN']
 client_id = ENV['MONZO_CLIENT_ID']
 client_secret = ENV['MONZO_CLIENT_SECRET']
 
-refresh_url = "https://api.monzo.com/oauth2/token"
+refresh_url = 'https://api.monzo.com/oauth2/token'
 
 # Preparing the payload for the POST request
 payload = {
@@ -39,7 +56,10 @@ begin
     # Update the refresh token if a new one is provided
     if response_json.key?('refresh_token')
       new_refresh_token = response_json['refresh_token']
-      # Update your stored refresh token with new_refresh_token here
+
+      # Update your stored refresh token in the .env file
+      update_env_file('MONZO_REFRESH_TOKEN', new_refresh_token)
+
       puts "New refresh token received and stored."
     end
   else
@@ -48,66 +68,3 @@ begin
 rescue RestClient::ExceptionWithResponse => e
   puts "An error occurred: #{e.response}"
 end
-
-=begin
-
-accounts_url = "https://api.monzo.com/accounts"
-
-# Headers for the GET request
-headers = {
-  Authorization: "Bearer #{access_token}"
-}
-
-# Sending the GET request
-begin
-  response = RestClient.get(accounts_url, headers)
-
-  # Parsing the response
-  response_json = JSON.parse(response.body)
-
-  # Assuming you're interested in personal accounts only
-  # This will iterate through the accounts and print their details
-  response_json['accounts'].each do |account|
-    # Check if the account is a personal type, you might want to adjust this based on your needs
-    if account['type'] == 'uk_retail' or account['type'] == 'uk_retail_joint'
-      puts "Account ID: #{account['id']}"
-      puts "Description: #{account['description']}"
-      # Add any other details you're interested in here
-    end
-  end
-
-rescue RestClient::ExceptionWithResponse => e
-  puts "An error occurred: #{e.response}"
-end
-
-# The URL to query the balance
-balance_url = "https://api.monzo.com/balance"
-
-# Headers and parameters for the GET request
-headers = {
-  Authorization: "Bearer #{access_token}"
-}
-params = {
-  account_id: account_id
-}
-
-# Sending the GET request
-begin
-  response = RestClient.get(balance_url, headers, params: params)
-
-  # Parsing the response
-  response_json = JSON.parse(response.body)
-
-  # Output the balance information
-  balance = response_json['balance']
-  currency = response_json['currency']
-  spend_today = response_json['spend_today']
-
-  puts "Balance: #{balance}"
-  puts "Currency: #{currency}"
-  puts "Spend today: #{spend_today}"
-rescue RestClient::ExceptionWithResponse => e
-  puts "An error occurred: #{e.response}"
-end
-
-=end

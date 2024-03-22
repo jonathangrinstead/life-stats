@@ -75,9 +75,15 @@ rescue RestClient::ExceptionWithResponse => e
   puts e.response
 end
 
+
 # Banking Stats
 
 monzo_spent_yesterday = ENV['MONZO_SPEND_TODAY']
+
+# Spotify Stats
+
+spotify_time_listened = ENV['SPOTIFY_DURATION_LISTENED']
+last_played = ENV['SPOTIFY_LAST_PLAYED']
 
 # Twilio Api Credentials
 
@@ -88,7 +94,8 @@ auth_token = ENV['TWILIO_AUTH_TOKEN']
 # Twilio Message Creation
 
 message = @client.messages.create(
-  body: "Yesterday's Stats 🚀 : 🏃‍♂️ #{step_count} Steps, 💰 £#{monzo_spent_yesterday} Spent",
+  body: "Yesterday's Stats 🚀 : 🏃‍♂️ #{step_count} Steps, 💰 £#{monzo_spent_yesterday} Spent,
+  🔊 Time Listened to Music: #{spotify_time_listened}, 💿 Last Played :#{last_played}",
   from: ENV['TWILIO_PHONE_NUMBER'],
   to: ENV['MY_PHONE_NUMBER']
   )

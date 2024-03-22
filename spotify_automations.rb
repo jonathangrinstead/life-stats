@@ -11,6 +11,23 @@ end
 
 Dotenv.load
 
+# Method to update the .env file
+def update_env_file(key, new_value)
+  env_file_path = '.env'
+  if File.exist?(env_file_path)
+    new_contents = File.readlines(env_file_path).map do |line|
+      if line.strip.start_with?("#{key}=")
+        "#{key}=#{new_value}\n"
+      else
+        line
+      end
+    end.join
+    File.open(env_file_path, 'w') { |file| file.write(new_contents) }
+  else
+    File.open(env_file_path, 'w') { |file| file.write("#{key}=#{new_value}\n") }
+  end
+end
+
 client_id = ENV['SPOTIFY_CLIENT_ID']
 client_secret = ENV['SPOTIFY_CLIENT_SECRET']
 refresh_token = ENV['SPOTIFY_REFRESH_TOKEN']
@@ -46,7 +63,6 @@ start_of_previous_day = Time.new(now.year, now.month, now.day) - (60 * 60 * 24)
 
 start_time_millis = (start_of_previous_day.to_f * 1000).to_i
 
-
 url = "https://api.spotify.com/v1/me/player/recently-played?after=#{start_time_millis}"
 
 headers = {
@@ -68,7 +84,7 @@ begin
   minutes = (total_duration_seconds % 3600) / 60
   seconds = total_duration_seconds % 60
 
-  puts "Total Duration: #{hours}h #{minutes}m #{seconds}s"
+  total_duration = "#{hours}h #{minutes}m #{seconds}s"
 
   last_played_track = recently_played['items'].last['track']
 
@@ -81,8 +97,8 @@ begin
   # Concatenate the artist names with the song title
   last_played = "#{artist_names} - #{song_title}"
 
-  puts "Last Played Track: #{last_played}"
-
+  update_env_file('SPOTIFY_DURATION_LISTENED', total_duration)
+  update_env_file('SPOTIFY_LAST_PLAYED', last_played)
 rescue RestClient::ExceptionWithResponse => e
   puts "An error occurred: #{e.response}"
 rescue => e

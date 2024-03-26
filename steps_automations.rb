@@ -92,5 +92,3 @@ begin
 rescue RestClient::ExceptionWithResponse => e
   puts e.response
 end
-
-puts step_count

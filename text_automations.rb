@@ -3,13 +3,9 @@
 require 'bundler/inline'
 require 'time'
 require 'json'
-
-gemfile do
-  source 'https://rubygems.org'
-  gem 'twilio-ruby', require: 'twilio-ruby'
-  gem 'dotenv', require: 'dotenv'
-  gem 'rest-client', require: 'rest-client'
-end
+require 'twilio-ruby'
+require 'dotenv'
+require 'rest-client'
 
 Dotenv.load
 

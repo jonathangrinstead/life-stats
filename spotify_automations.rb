@@ -1,13 +1,9 @@
 require 'bundler/inline'
 require 'time'
 require 'json'
-
-gemfile do
-  source 'https://rubygems.org'
-  gem 'dotenv', require: 'dotenv'
-  gem 'rest-client', require: 'rest-client'
-  gem 'base64', require: 'base64'
-end
+require 'dotenv'
+require 'rest-client'
+require 'base64'
 
 Dotenv.load
 

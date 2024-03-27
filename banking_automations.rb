@@ -3,12 +3,8 @@
 require 'bundler/inline'
 require 'time'
 require 'json'
-
-gemfile do
-  source 'https://rubygems.org'
-  gem 'dotenv', require: 'dotenv'
-  gem 'rest-client', require: 'rest-client'
-end
+require 'dotenv'
+require 'rest-client'
 
 Dotenv.load
 

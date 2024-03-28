@@ -1,6 +1,4 @@
 # Gems and requires
-
-require 'bundler/inline'
 require 'time'
 require 'json'
 require 'twilio-ruby'

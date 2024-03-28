@@ -1,4 +1,3 @@
-require 'bundler/inline'
 require 'time'
 require 'json'
 require 'dotenv'

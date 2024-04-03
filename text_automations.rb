@@ -1,5 +1,4 @@
 # Gems and requires
-require 'time'
 require 'json'
 require 'twilio-ruby'
 require 'dotenv'
@@ -7,18 +6,21 @@ require 'rest-client'
 
 Dotenv.load
 
+file_contents = File.read('stats.json')
+data = JSON.parse(file_contents)
+
 # Step Stats
 
-step_count = ENV['STEP_COUNT']
+step_count = data.last['step_count']
 
 # Banking Stats
 
-monzo_spent_yesterday = ENV['MONZO_SPEND_TODAY']
+monzo_spent_yesterday = data.last['spend_yesterday']
 
 # Spotify Stats
 
-spotify_time_listened = ENV['SPOTIFY_DURATION_LISTENED']
-last_played = ENV['SPOTIFY_LAST_PLAYED']
+spotify_time_listened = data.last['duration_listened']
+last_played = data.last['last_song_played']
 
 # Twilio Api Credentials
 

@@ -11,3 +11,5 @@ gem 'rest-client'
 gem 'dotenv'
 
 gem 'base64'
+
+gem 'rspec'

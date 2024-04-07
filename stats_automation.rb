@@ -5,34 +5,13 @@ require 'json'
 require 'dotenv'
 require 'rest-client'
 require 'base64'
+require_relative 'stats_updater'
+require_relative 'env_updater'
+require_relative 'currency_formatter'
 
 Dotenv.load
 
-# Method to update the .env file
-def update_env_file(key, new_value)
-  env_file_path = '.env'
-  if File.exist?(env_file_path)
-    new_contents = File.readlines(env_file_path).map do |line|
-      if line.strip.start_with?("#{key}=")
-        "#{key}=#{new_value}\n"
-      else
-        line
-      end
-    end.join
-    File.open(env_file_path, 'w') { |file| file.write(new_contents) }
-  else
-    File.open(env_file_path, 'w') { |file| file.write("#{key}=#{new_value}\n") }
-  end
-end
-
 #START OF MONZO API CALL
-
-# Method to convert 64bit integer into float
-def format_currency(amount_in_pounds)
-  amount_str = amount_in_pounds.to_s.rjust(3, '0')
-  formatted_amount = amount_str.insert(-3, '.')
-  formatted_amount.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
-end
 
 # Retrieve environment variables
 refresh_token = ENV['MONZO_REFRESH_TOKEN']
@@ -62,9 +41,7 @@ begin
       new_refresh_token = response_json['refresh_token']
 
       # Update your stored refresh token in the .env file
-      update_env_file('MONZO_REFRESH_TOKEN', new_refresh_token)
-
-      puts 'New refresh token received and stored.'
+      EnvUpdater.update_env_file('MONZO_REFRESH_TOKEN', new_refresh_token)
     end
   else
     puts 'Unexpected response format.'
@@ -91,7 +68,7 @@ begin
   response = RestClient.get balance_url, {Authorization: "Bearer #{access_token}"}
   balance_json = JSON.parse(response.body)
   spend_today = balance_json['spend_today']
-  formatted_spend = format_currency(spend_today.to_i.abs)
+  formatted_spend = CurrencyFormatter.format_currency(spend_today.to_i.abs)
 rescue RestClient::ExceptionWithResponse => e
   puts "An error occurred: #{e.response}"
 end
@@ -242,43 +219,11 @@ end
 
 #JSON LOADING
 
-json_file_path = 'stats.json'
+StatsUpdater.update_json_file(
+  spend_yesterday: formatted_spend,
+  total_duration: total_duration,
+  last_played: last_played,
+  step_count: step_count
+)
 
-# Initialize an array to hold the data
-data = []
-
-# Read the existing JSON file if it exists
-if File.exist?(json_file_path)
-  file_content = File.read(json_file_path)
-  begin
-    data = JSON.parse(file_content)
-  rescue JSON::ParserError
-    puts "Existing JSON file is invalid. Starting fresh."
-  end
-end
-
-# Verify that the data is an array (in case the JSON file wasn't an array)
-unless data.is_a?(Array)
-  puts "Warning: Existing data was not an array. Starting fresh."
-  data = []
-end
-
-# Add a new object with yesterday's date
-yesterday = Date.today - 1
-formatted_yesterday = yesterday.strftime("%B %d, %Y") # Example: "March 28, 2024"
-new_entry = { "date" => formatted_yesterday,
-              "spend_yesterday" => formatted_spend,
-              "duration_listened" => total_duration,
-              "last_song_played" => last_played,
-              "step_count" => step_count
-}
-
-# Append the new entry to the data array
-data << new_entry
-
-# Write the updated data back to the JSON file
-File.open(json_file_path, 'w') do |file|
-  file.write(JSON.pretty_generate(data))
-end
-
-puts "A new object for yesterday's date has been added to #{json_file_path}."
+puts 'Stats object created'

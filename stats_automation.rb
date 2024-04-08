@@ -5,9 +5,9 @@ require 'json'
 require 'dotenv'
 require 'rest-client'
 require 'base64'
-require_relative 'stats_updater'
-require_relative 'env_updater'
-require_relative 'currency_formatter'
+require_relative 'modules/stats_updater'
+require_relative 'modules/env_updater'
+require_relative 'modules/currency_formatter'
 
 Dotenv.load
 

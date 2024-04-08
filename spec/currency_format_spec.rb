@@ -1,4 +1,4 @@
-require_relative '../currency_formatter'
+require_relative '../modules/currency_formatter'
 
 RSpec.describe CurrencyFormatter do
   describe '.format_currency' do

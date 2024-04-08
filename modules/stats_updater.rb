@@ -12,8 +12,6 @@ module StatsUpdater
     write_data_to_file(data)
   end
 
-  private
-
   # Loads existing data from the JSON file, or initializes an empty array if file doesn't exist or is invalid
   def self.load_existing_data
     if File.exist?(JSON_FILE_PATH)

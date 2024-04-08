@@ -1,4 +1,4 @@
-require_relative '../env_updater'
+require_relative '../modules/env_updater'
 
 RSpec.describe EnvUpdater do
   let(:env_file_path) { '.env.test' }

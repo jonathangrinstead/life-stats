@@ -2,8 +2,6 @@
 
 source "https://rubygems.org"
 
-# gem "rails"
-
 gem 'twilio-ruby'
 
 gem 'rest-client'
@@ -12,4 +10,6 @@ gem 'dotenv'
 
 gem 'base64'
 
-gem 'rspec'
+group :development, :test do
+  gem 'rspec', '~> 3.13.0'
+end

@@ -54,7 +54,7 @@ DEPENDENCIES
   base64
   dotenv
   rest-client
-  rspec
+  rspec (~> 3.13.0)
   twilio-ruby
 
 BUNDLED WITH

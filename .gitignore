@@ -1,3 +1,4 @@
 .env
 stats.json
 cron_text_automations.log
+cron.log

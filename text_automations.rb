@@ -3,6 +3,7 @@ require 'json'
 require 'twilio-ruby'
 require 'dotenv'
 require 'rest-client'
+require 'date'
 
 Dotenv.load('/Users/jonathangrinstead/code/life-stats/.env')
 
@@ -37,4 +38,5 @@ message = @client.messages.create(
   to: ENV['MY_PHONE_NUMBER']
 )
 
+puts Date.today
 puts message.sid

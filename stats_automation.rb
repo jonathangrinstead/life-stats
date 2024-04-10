@@ -1,5 +1,6 @@
 # Gems and Requires
 
+require 'date'
 require 'time'
 require 'json'
 require 'dotenv'
@@ -226,4 +227,5 @@ StatsUpdater.update_json_file(
   step_count: step_count
 )
 
+puts Date.today
 puts 'Stats object created'

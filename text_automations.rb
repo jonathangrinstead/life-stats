@@ -6,7 +6,7 @@ require 'rest-client'
 
 Dotenv.load
 
-file_contents = File.read('stats.json')
+file_contents = File.read('/Users/jonathangrinstead/code/life-stats/stats.json')
 data = JSON.parse(file_contents)
 
 # Step Stats
@@ -31,10 +31,10 @@ auth_token = ENV['TWILIO_AUTH_TOKEN']
 # Twilio Message Creation
 
 message = @client.messages.create(
-  body: "\n\n Yesterday's Stats 🚀 : \n\n 🏃‍♂️ #{step_count} Steps \n\n 💰 £#{monzo_spent_yesterday} Spent
-  \n 🔊 Time Listened to Music: #{spotify_time_listened} \n\n 💿 Last Played :#{last_played}",
+  body: "\n\n Yesterday's Stats 🚀 : \n\n 🏃‍♂️ Steps: #{step_count} \n\n 💰 Spent: £#{monzo_spent_yesterday}
+  \n 🔊 Time Listened to Music: \n #{spotify_time_listened} \n\n 💿 Last Played: \n #{last_played}",
   from: ENV['TWILIO_PHONE_NUMBER'],
   to: ENV['MY_PHONE_NUMBER']
-  )
+)
 
 puts message.sid

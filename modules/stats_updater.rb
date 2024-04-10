@@ -2,7 +2,7 @@ require 'json'
 require 'date'
 
 module StatsUpdater
-  JSON_FILE_PATH = 'stats.json'
+  JSON_FILE_PATH = '/Users/jonathangrinstead/code/life-stats/stats.json'
 
   # Updates the JSON file with a new entry
   def self.update_json_file(spend_yesterday:, total_duration:, last_played:, step_count:)

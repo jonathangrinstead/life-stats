@@ -9,6 +9,6 @@ The system operates in two main phases. Initially, at the end of each day, a scr
 
 # 🌄 Screenshots
 
-![SMS Screenshot](../img/text.jpg?raw=true "Text Image")
+![SMS Screenshot]("../img/text.jpg?raw=true "Text Image")
 
 

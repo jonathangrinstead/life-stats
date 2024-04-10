@@ -4,7 +4,7 @@ require 'twilio-ruby'
 require 'dotenv'
 require 'rest-client'
 
-Dotenv.load
+Dotenv.load('/Users/jonathangrinstead/code/life-stats/.env')
 
 file_contents = File.read('/Users/jonathangrinstead/code/life-stats/stats.json')
 data = JSON.parse(file_contents)
